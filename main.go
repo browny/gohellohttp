@@ -12,6 +12,7 @@ import (
 
 func main() {
 	r := httprouter.New()
+
 	r.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		// dump request body
 		requestDump, err := httputil.DumpRequest(r, true)
@@ -28,9 +29,14 @@ func main() {
 		fmt.Fprintf(w, "host: %v", name)
 	})
 
+	r.GET("/kservice", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		kService := os.Getenv("K_SERVICE")
+		fmt.Fprintf(w, "K_SERVICE: %s", kService)
+	})
+
 	r.GET("/health", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		isHealth := os.Getenv("HEALTH")
-		fmt.Printf("isHealth: %s", isHealth)
+		fmt.Printf("isHealth: %s\n", isHealth)
 
 		if isHealth == "false" {
 			w.WriteHeader(http.StatusInternalServerError)
